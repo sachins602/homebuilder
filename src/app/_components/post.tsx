@@ -8,21 +8,29 @@ export function LatestPost() {
   const [latestPost] = api.post.getLatest.useSuspenseQuery();
 
   const utils = api.useUtils();
-  const [name, setName] = useState("");
+  const [name, setName] = useState<string>("");
+  const [url, setUrl] = useState<string>("");
   const createPost = api.post.create.useMutation({
-    onSuccess: async () => {
+    onSuccess: async (image) => {
       await utils.post.invalidate();
-      setName("");
+      // const base64String = btoa(String.fromCharCode(...new Uint8Array(image)));
+
+      const imageUrl = `data:image/jpeg;base64,${image}`;
+
+      setUrl(imageUrl);
     },
   });
 
   return (
     <div className="w-full max-w-xs">
       {latestPost ? (
-        <p className="truncate">Your most recent post: {latestPost.name}</p>
+        <div>
+          <p className="truncate">Your input: {latestPost}</p>
+        </div>
       ) : (
-        <p>You have no posts yet.</p>
+        <p>You have no inputs yet.</p>
       )}
+      {url ? <img className="m-10" src={url} alt="aa" /> : null}
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -32,7 +40,7 @@ export function LatestPost() {
       >
         <input
           type="text"
-          placeholder="Title"
+          placeholder="your input"
           value={name}
           onChange={(e) => setName(e.target.value)}
           className="w-full rounded-full bg-white/10 px-4 py-2 text-white"
