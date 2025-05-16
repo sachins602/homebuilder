@@ -23,3 +23,4 @@ export default async function Home() {
     </HydrateClient>
   );
 }
+// a comment with more words
